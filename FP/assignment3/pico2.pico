@@ -1,0 +1,25 @@
+begin 
+	declare
+		a: natural,
+		b: natural,
+		tmp: natural,
+		out: natural;
+		
+	a := 5;
+	b := a-1;
+	tmp := a;
+	out := a;
+
+	while a-1 do
+
+		while b-1 do
+			out := out + tmp;
+			b := b - 1
+		od;
+		
+		tmp := out;
+		a := a - 1;
+		b := a - 1
+	od
+	
+end

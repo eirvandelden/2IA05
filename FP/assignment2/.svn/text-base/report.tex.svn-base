@@ -1,0 +1,284 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  PROJECT: report
+%%
+%%  Created by Etienne van Delden on 04-03-11.
+%%  Copyright 2011 __MyCompanyName__. 
+%%  
+%%  All rights reserved.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Packages declarations
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amssymb,amsmath,verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Fonts declarations
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\N}{\mathbb{N}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Input macro file
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input{report-macro.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Begin Document
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Title & Data
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\title{2IA05: Functioneel Programmeren\\
+            Assignment 2}
+	
+	\author{Etienne van Delden (0618959)\\
+            Ron Vanderfeesten (0581347)\\
+            Tom Vrancken (0611004)}
+		
+	\date{\today}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Abstract
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+	\maketitle
+	
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: The sections
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\section{Kennismaken met Pico} 
+	
+    \begin{enumerate}
+        \item Het voorbeeldprogramma berekent het $i^{de}$ fibonacci getal, met $i = in$.
+        Het resultaat word opgeslagen in $out$, dus $out = fib_{in}$.
+        
+        \item We kunnen de vermenigvuldiging defineeren als herhaaldelijk optellen:
+            \begin{equation}
+                v :: \N \rightarrow \N \rightarrow \N 
+            \end{equation}
+                        
+        \begin{displaymath} 
+        \begin{array}{ll}
+            v.a.b = 0                 & \textrm{\textbf{if }} b = 0\\ 
+            v.a.b = a + v.a.(b-1)     & \textrm{\textbf{if }} b \neq 0\\ 
+        \end{array} 
+        \end{displaymath}
+                
+        We generaliseren $v$ met behulp van theorie 5 naar gv, met 
+        
+        \begin{equation}
+            gv :: \N \rightarrow \N \rightarrow \N \rightarrow \N        
+        \end{equation}
+        
+        \begin{displaymath}
+        \begin{array}{ll}
+            gv.u.a.b = u & \textbf{if } b = 0\\
+            gv.u.a.b = gv.(u+a).a.(b-1) & \textbf{if } b \neq 0
+        \end{array}
+        \end{displaymath}
+        Waarbij $u$ de accumulator is die de tusssen oplossing bewaart.
+
+        
+    \item Voor de Haskell implementatie, zie functie $opdracht3$ in picoStart.HS, Onder --Section 1 --Opdracht 3
+            \begin{verbatim}
+begin declare
+    a: natural,
+    b: natural,
+    out: natural;
+    a := 13;
+    b := 37;
+    while b do
+        out = out + a;
+        b = b - 1
+    od    
+end
+        \end{verbatim}
+      
+        
+    \item
+        We generaliseren de triviale functie $fac.n$ (wat het uitvoeren van $n!$ voorstelt) met behulp van theorie 5 naar $gfac$, met
+        
+        \begin{equation}
+            gfac :: \N \rightarrow \N \rightarrow \N 
+        \end{equation}
+        \begin{displaymath}
+        \begin{array}{ll}
+        gfac.a.n = a * 1 & \textbf{if } n = 0\\
+        gfac.a.n = gfac.(a*n).(n-1) & \textbf{if } n \neq 0
+        \end{array}
+        \end{displaymath}
+
+        Omdat Pico geen vermenigvuldigingen heeft, maken we gebruik van de generale functie $gv$ voor vermenigvuldigingen (zie ook opgave 1.2):
+        
+        \begin{displaymath}
+        \begin{array}{ll}
+            gfac.a.n = gfac.(gv.0.a.n).(n-1) & \textbf{if } n  \neq 0
+        \end{array}
+        \end{displaymath}
+    
+    \item Voor de Haskell implementatie van Pico2, zie functie pico2 in picoStart.HS, Onder --Section 1 --Opdracht 5
+    \begin{verbatim}
+begin declare
+    a: natural,
+    b: natural,
+    tmp: natural,
+    out: natural;
+
+    a := 13
+    b := a-1
+    tmp := a
+    %counter for faculty
+    while a-1 do
+        %application of multiplication
+        while b-1 do
+            out := out + tmp;
+            b := b - 1
+        od
+        tmp:= out
+        a := a - 1
+        b := a-1
+    od    
+end
+        \end{verbatim} 
+        
+
+    \item 
+        Note: niet gedefinieerd voor b = 0
+        \begin{equation} div:: \N \rightarrow \N \rightarrow \N \end{equation}
+        
+        \begin{displaymath}
+        \begin{array}{ll}
+            div.a.b. = 0 & \textrm{if }a < b \\
+            div.a.b = 1 + div.(a-b).b & \textrm{if } a \geq b
+        \end{array}
+        \end{displaymath}
+
+        Wederom generaliseren we de functie met behulp van theorie 5, analoog aan opdrachten 1.2 en 1.4
+
+        \begin{equation}
+            gdiv :: \N \rightarrow \N \rightarrow \N 
+        \end{equation}
+        \begin{displaymath}
+        \begin{array}{ll}
+        gdiv.u.a.b = 0 & \textbf{if } a < b\\
+        gdiv.u.a.b = gdiv.(u+1).(a-b).b & \textbf{if } a \geq b
+        \end{array}
+        \end{displaymath}
+
+    \item Gezien Pico geen operator heeft voor gelijkheid, moeten we deze simuleren met herhaaldelijk optellen en aftrekken. Voor de Haskell implementatie van Pico3, zie functie pico3 in picoStart.HS, Onder --Section 1 --Opdracht 7
+        
+        \begin{verbatim}
+begin declare
+    a: natural,
+    b: natural,
+    temp_a: natural,
+    temp_b: natural,
+    out: natural,
+    a_greater_than_b: natural;
+    
+    a := 1311;
+    b := 23;
+    
+    out := 0;
+    
+    a_greater_than_b_or_equal := 1;
+    temp_a := 0;
+    temp_b := 0;
+    while (b - temp_b) do
+        temp_a := temp_a + 1;
+        temp_b := temp_b + 1;
+        if (a - temp_a) then a_greater_than_b_or_equal := 1
+        else a_greater_than_b_or_equal := 0
+    od
+        
+    while a_greater_than_b do
+        a := a - b;
+        out := out + 1
+        
+        a_greater_than_b_or_equal = 1;
+        temp_a := 0;
+        temp_b := 0;
+        while (b - temp_b) do
+            temp_a := temp_a + 1;
+            temp_b := temp_b + 1;
+            if (a - temp_a) then a_greater_than_b_or_equal := 1
+            else a_greater_than_b_or_equal := 0 
+        od
+        
+    od    
+end
+        \end{verbatim}
+\end{enumerate}    
+        
+        
+    \section{Programma Analyse}
+    \begin{enumerate}
+        \item Voor de ongeaccumeleerde versie, zie functie $program\_used\_variables$ (met een Pico programma als input) in picoStart.HS, onder --Section 2 --Opdracht 1. Voor de geaccumeleerde versie, zie functie $program\_g\_used\_variables$.
+        \item Zie functie $context\_conditie1$ (met een Pico programma als input) in picoStart.HS, Onder --Section 2 --Opdracht 2
+        \item Voor de ongeaccumeleerde versie, zie functie $program\_context\_conditie2$ (met een Pico programma als input) input picoStart.HS, Onder --Section 2 --Opdracht 3. Voor de geaccumeleerde versie, zie functie $g\_context\_conditie2$.
+
+        \item Zie de functie $program\_type\_check$ in picoStart.HS, Onder --Section 2 --Opdracht 4.\\
+        
+        
+        \item Zie de functie \textit{num\_assign\_stats\_var\_names} in picoStart.HS, onder --Section 2 --Opdracht 5. Deze functie neemt een statement als argument en berekent vervolgens hoeveel assignments er in dit statement voorkomen en welke variabelen in deze assignments voorkomen. De functie retourneert een paar bestaande uit een geheel getal dat het aantal assignments representeerd en een lijst met variabelenamen.
+        \item Zie de functie \textit{stat\_statistics} in picoStart.HS, onder --Section 2 --Opdracht 6. Deze functie neemt als argument een pico programma en berekent in one-pass het 3-tuple (nrA; nrI; nrW) waarbij nrA, nrI en nrW respectievelijk het aantal assignments, if-statements en while-statements van p voorstellen. De functie traverseert de statementlijst en telt gaandeweg ieder voorkomen van de verschillende statement types. Er is tevens een hulpfunctie \textit{t3plus} ge\"{i}ntroduceerd om 3-tupels op te kunnen tellen.
+        \item Zie de functie \textit{calc\_maccabe} in picoStart.HS, onder --Section 2 --Opdracht 7. Deze functie berekent de MacCabe complexiteit van een gegeven pico programma. De functie neemt een pico programma als argument en telt vervolgens alle guards die voorkomen in de statementlijst. Omdat een geldig if- en while-statement een guard moeten bevatten kunnen we voor ieder if- of while-statement dat we tegenkomen een guard tellen. We hoeven dus niet de vorm van de expressie te evalueren. De functie retourneert een geheel getal dat het aantal guards representeerd.
+    \end{enumerate}
+    
+    \section{Evaluator voor Pico}
+    
+    Er bestaat een correspondentie tussen functionele en imperatieve talen. Deze correspondentie komt naar voren in de evaluator voor PICO. Door de state van het programma bij te houden in elke recursieve aanroep kunnen we een imperatief programma simuleren. In PICO wordt state van een programma bepaald door de waarde van elke variabele, daartoe wordt in elke recursieve aanroep een lijst van variabelen en hun waarde doorgegeven. In essentie loopt de "eval" functie de hele syntax boom af en voert de operatie in dat gedeelte uit. Veelal betekend dit dat er recursieve aanroepen nodig zijn om bijvoorbeeld een expressie uit te rekenen.
+    
+    De eval functie lijkt heel erg op de orginele context vrije grammatica van PICO. Voor elke term is er een aparte ``eval" functie (bijvoorbeeld ``eval\_expr") die in staat is om dat gedeelte van de syntax boom te evalueren. Men begint dan bovenaan bij de statement lijst en gaat deze af naar gelang men een bepaalde term tegenkomt. De evaluator heeft verschillende functies om expressies te evalueren aangezien PICO twee types kent. Uiteraard kunnen alleen correcte PICO programma's uitgevoerd worden daarom worden in eerste instantie de context condities gecontroleerd en zo nodig wordt er een foutmelding gegeven als de context condities niet kloppen.
+    
+    Een aanroep van de eval functie kan als volgt gedaan worden. Laat \texttt{sl} een lijst van statements zijn, en \texttt{dl} een lijst van declaraties zijn (beide in Haskell notatie). Dan kan de eindtoestand van het programma berekend worden door de aanroep \texttt{eval dl sl}. Deze geeft dan een lijst van paren van variabelenamen en de bijbehorende waarde.
+    
+
+
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Bibliography
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{thebibliography}{XXXX}
+		
+		\bibitem[XXXX]{XXXX}
+		\newblock{Name,}
+		\newblock{\em Title,}
+		\newblock{ vol. X.}
+		\newblock{ pp. XX--YY.}
+		\newblock{Editor, Town,}
+		\newblock{Year.}
+		
+	\end{thebibliography}
+	
+\end{document}

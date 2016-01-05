@@ -1,0 +1,311 @@
+\documentclass[9pt]{memoir}
+\usepackage{prs900}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts} 
+\usepackage{bbm}
+
+\definecolor{bg}{rgb}{0.8,0.8,0.8}
+
+\newcommand{\todo}[1]{{\LARGE TODO: } #1}
+
+\newcommand{\bgbox}[1]{\begin{center} \colorbox{bg}{\parbox{\linewidth}{#1}} \end{center}}
+
+\newcommand{\blob}{^{\bullet}}
+\newcommand{\fsplit}{\vartriangle}
+\newcommand{\fcase}{\triangledown}
+\newcommand{\listset}{\mathbb{L}_\alpha}
+\renewcommand{\mathbbm}[1]{\textbf{#1}}
+
+\title{Summary of Functional Programming (2IA05)}
+\author{R. Vanderfeesten}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+\chapter{Isomorphism}
+\label{cha:Isomorphism}
+
+A possible (and often used) equivalence on sets is defined as follows: Let $A$ and $B$ be sets, if there exists a bijection from $A$ to $B$ then $A$ and $B$ are said to be isomorphic, written as $A\cong B$. In essence these two sets share the same ``shape'', as every element corresponds to some unique element in the other. Note that such a bijection is almost never unique.
+
+\chapter{Extensionality}
+\label{cha:Extensionality}
+
+%TODO: Note that the range is a subset of the co domain which can be seen as the result type
+
+Equivalence of functions is defined as:
+
+\[ f = g \equiv (\forall x \in Dom(f) \cup Dom(g) : f.x = g.x)\]
+
+This equivalence is known as extensionality.
+
+A \textbf{function space} is the set of all \underbar{possible} functions over some domain $\mathbb{X}$ (which is again a set).
+
+\chapter{Type construction}
+\label{cha:Type_construction}
+%TODO: why types
+
+\section{Unit type}
+\label{sec:Unit_type}
+
+A type is simply a set, with the additional notion that subsets of this type are used as function arguments and results.
+
+The smallest possible (non empty) type is the so called \textbf{unit} denoted as $\mathbbm{1}$. Unit is a set consiting of only one element called ``void'', this element is written as an opening and closing parenthesis ``$()$''.
+
+The function space of unit consists of exactly one function namely the identity function $id$.
+
+\bgbox{In the reader void is written as $*$ and $\mathbbm{1}$ as \textbf{1}}
+
+\section{Constant functions}
+\label{sec:Constant_function}
+Now we have the type unit we can construct constants (using functions). We define a constant function as a function that takes a void and produces the element we want as a constant. Thus any constant function is of the form:
+
+\[ x \blob.() = x\]
+
+We will use a notational shorthand for writing down constant functions as $x \blob$, but everywhere where $x \blob$ is written one can pretend that it is simply the element $x$.
+
+
+\section{Cartesian product}
+\label{sec:Cartesian_product}
+
+The Cartesian product is a type (thus a set) constructed from two other sets. It is defined as:
+
+\[ A\times B = \{(a,b)|a\in A\wedge b\in B\} \]
+
+The function space of $A\times B$ contains a lot of function, however two functions in particular are very convenient to use. These two functions are called \textbf{projections} and are called ``first'' and ``second'', which are often written as \emph{fst} and $snd$.
+
+\bgbox{In the reader first is written $\pi_1$ and second as $\pi_2$}
+
+\section{Split}
+
+% TODO: notation for types
+
+Now, lets say we have two sets $A$ and $B$ and some arbitrary function $f$ and $g$ with the following types.
+
+\[ f\in( A\rightarrow B )\]
+\[ g\in( A\rightarrow C )\]
+
+One could now say since the domain of both functions are the same, and since we now have a Cartesian product that could combine the sets $B$ and $C$ into pair. Would it be possible to introduce an higher level function that takes two functions and forces the result to become a pair? It turns out that you can do that. For that we introduce the (high level) function \textbf{split} (notated as ``$\fsplit$'') as follows, let $a \in A$ then:
+
+\[ (f \fsplit g) \in (A \rightarrow B \times C) \]
+\[ (f \fsplit g).a=(f.a,g.a)  \]
+
+Which should be read as apply element $a$ to function $f$ and $g$ and pair the results.
+
+\section{Disjoint union}
+\label{sec:Disjoint_union}
+
+The Cartesian product is not the only operator that can combine sets into new sets. The Disjoint union also does this. The \textbf{Disjoint union} can be seen as an operation that takes the union of the elements of the two sets $A$ and $B$, but remembers for each element if it came from $A$ or from $B$ (but not both, which is what you want). Since it cannot (properly) combine sets that overlap, sets $A$ and $B$ are required to be disjoint.
+
+Two functions are important when dealing with disjoint unions, these are called \textbf{injections} written as $in_A$ and $in_B$. These functions take an element from respectively $A$ or $B$ and insert (inject) it into a new set of the form $A+B$. If one were to add more elements to this set we need to union the result of each inject with each other. Thus if we would want to build the following disjoint union: $\{1_A, 2_B, 3_A, 4_B\}$. We would need to execute the following: $(in_A.1) \cup (in_B.2) \cup (in_A.3) \cup (in_B.4)$
+
+\bgbox{In the reader Disjoint union is called Disjoint sum}
+
+This notion looks as if it would (unnessecarily) complicate matters. However, using the disjoint sum we can write the base and the inductive step of an inductive type as one single set.
+
+\section{Case}
+\label{sec:case}
+Now that we have disjoint unions of different sets, we probably want to apply different functions to elements that came from $A$ and to elements from $B$. For this we introduce the \textbf{case} operator (notated as ``$\fcase$'') that takes two functions $f \in (A \rightarrow C)$ and $g \in (B \rightarrow C)$ such that:
+
+\[ (f \fcase g) \in A + B \rightarrow C  \]
+\[ (f \fcase g).(in_A) = f.a \]
+\[ (f \fcase g).(in_B) = g.b \]
+
+In which $(f \fcase g)$ should be read as: if the element $a$ came from set $A$, call function $f$ with it, and if it came from $B$ call $g$ with it. A property of case is that function composition distributes from the left over cases: \[ h\circ(f \fcase g) = (h \circ f) \fcase (h \circ g) \]
+
+\section{Inductive definitions}
+\label{sec:Inductive_definitions}
+Using the mathematics we now have introduced we can construct inductive types. What is an inductive type? Actually, almost all sets we are used to working with are (or can be) defined as inductive types. For example the set of natural numbers $\mathbb{N}$ can be defined as follows:
+
+\begin{description}
+    \item[Base] $0 \in \mathbb{N}$
+    \item[(Inductive) step] $n \in \mathbb{N} \Rightarrow s.n \in \mathbb{N}$
+\end{description}
+
+This definition essentially says 0 is a natural number, and given an $n$ in the natural numbers the successor $s$ of $n$ is also a natural number. The function $s$ can be seen as a function that adds 1 to the natural number. The set of natural numbers would then look like:
+
+\[ \{ 0, s.0, s.s.0, s.s.s.0, \dots , s^n.0 \} \]
+
+Where the notation $s^n.0$ simply means $n$ repeated applications of $s$. Ofcourse, writing $s^n.0$ everywhere is tedious, that is why we simply write $n$. While this may see silly at first, the above definition allows us to introduce a formal framework in which we can prove properties about the natural numbers.
+
+\bgbox{We should note that repeated application is actually a more general property. The $^n$ operator can be generalized to accept an arbitrary binary operator, this is beyond the scope of this summary.}
+
+Note that there is a small catch in the above definition. Formally speaking these two definitions (basis and step) are not restrictive enough because having $0 \in \mathbb{N}$, does not mean there are other basis that could also be in $\mathbb{N}$. For example if for some reason we would also have $a \in \mathbb{N}$ (here 'a' is not a number but some other object), then all of a's successor would also be in the natural numbers along with $\{1,2,3,\dots\}$. That is why we want the smallest set that follows the above restrictions, we can also say that we require $0$ to be an \textbf{unique base}.
+
+\section{Uniqueness and totality}
+\label{sec:Uniqueness_and_totality}
+Now we have established that our inductive type has only a single unique base and there is only one possible step from some arbitrary natural number. We can derive the following two properties of natural numbers:
+
+\begin{description}
+    \item[Uniqueness] If an object is an element of $\mathbb{N}$ then it can be constructed using above rules.
+    \item[Totality] If an object can be constructed using above rules then it is an element of $\mathbb{N}$.
+\end{description}
+
+\bgbox{In the reader uniqueness is called ``no junk'', and totality is called ``no confusion''.}
+
+In other words, the least solution of the above equations form a full description of the natural numbers.
+
+\section{Structural induction}
+\label{sec:Structural_induction}
+
+We mentioned before that an inductive type could help us prove properties of the natural numbers. How do we do this? Well the intuition is as follows: we have two rules that completely describe the natural numbers. We have also seen that the rules for natural numbers are unique and total. This might indicate that we do not need to prove a property for all natural numbers. If we can just show the property we want to prove is true for both rules then perhaps it is true for all natural numbers.
+
+In fact this is possible, as follows: let $P$ be some predicate on a natural number. The predicate $P(n)$ is often called an invariant. If we can prove that $P(0)$ holds, and that $P(n) \Rightarrow P(s.n)$ holds we can construct the proof for an arbitrary natural number as follows:
+
+\[ P(0) \Rightarrow P(s.0) \Rightarrow P(s.s.0) \Rightarrow \dots \Rightarrow P(s^n.0) \]
+
+This means we can construct the proof for an arbitrary natural number by just proving these two rules. This means that we have the following implication:
+
+\[ \Big( P(0)\wedge (P(n)\Rightarrow P(s.n)) \Big) \Rightarrow \Big(\forall n\in\mathbb{N}:P(n) \Big) \]
+
+Which is exactly the definition of induction (over the natural numbers). Thus we have shown that the induction proof principle indeed holds on the natural numbers.
+
+\bgbox{Note that a predicate on a natural number is nothing more than a function that maps natural numbers onto the set of booleans.}
+
+\section{Functions over inductive types}
+\label{sec:Functions_over_inductive_types}
+If we want to construct the natural numbers in for example a functional programming language, we will need to use functions to construct our types. This is mostly because functional programming language have no ``true'' concepts of sets, they simply use functions to map types onto datastructures. Lets recap the appropriate functions to construct our inductive type:
+
+\begin{description}
+    \item[Base] $0 \blob$ a constant function that always produces 0 when something is applied to it.
+    \item[Step] $s$ a successor (or step) function that produces a new natural number from an old one.
+\end{description}
+
+These function are called constructors and they are the same constructors that often appear in programming languages. Now lets take a look on the sets that these constructors operate. A rule that restricts the function to a certain domain and codomain is called a \textbf{function type}. For the above functions these look as follows:
+
+\begin{description}
+    \item[Base] $0 \blob \in \mathbbm{1} \rightarrow \mathbb{N}$ which is also often written as $0 \blob :: \mathbbm{1} \rightarrow \mathbb{N}$.
+    \item[Step] $s \in \mathbb{N} \rightarrow \mathbb{N}$, also written as $s :: \mathbb{N} \rightarrow \mathbb{N}$
+\end{description}
+
+Note that both constructors result in the same codomain, this suggests that we could use the case operator to combine the two constructors of the natural numbers into one as follows (recall the definition of case in Section \ref{sec:case}.) For two functions $0 \blob \in (\mathbbm{1} \rightarrow \mathbb{N})$ and $s \in (\mathbb{N} \rightarrow \mathbb{N})$ we can combine them as:
+
+\[ (0 \blob \fcase s) \in (\mathbbm{1} + \mathbb{N}) \rightarrow \mathbb{N} \]
+
+Then the function $F = (0 \blob \fcase s)$ should intuitively be read as: choose to apply void to $F$ and get the base of the natural numbers, choose to apply a natural number, then get its successor. The plus symbol in the domain simply means choose either one of these types, and regardless of type produce a natural number.
+
+A set $S$ together with some constructor function $F$ is called an \textbf{F-Algebra}. How does such an F-Algebra work? One takes 
+
+\section{Lists as an inductive type}
+\label{sec:Lists_as_an_inductive_type}
+
+Thus in this case $(\mathbb{N},(0 \blob \fcase s))$ is an F-Algebra. 
+
+Obviously natural numbers are not the only set which we can define inductively. Another common inductive set is the set of lists over some alphabet $\alpha$. We can construct lists over $\alpha$ in a similar way as we did with the natural numbers.
+
+\begin{description}
+    \item[Base] The function $[] \blob$ called ``empty list'' with type $[] \blob \in \mathbbm{1} \rightarrow \listset$.
+    \item[Step] The function (:) called ``cons'' with type $ \listset \times \alpha \rightarrow \listset$ and definition $(:).(xs,x) \rightarrow x:xs$ for all $x\in  \alpha$ and $xs \in \listset$.
+\end{description}
+
+An inductive list then looks like $x_{n} : x_{n-1} : x_{n-2} : \dots : x_1$, where $x_n \in \alpha$. However lists are usually written as $[x_{n} , x_{n-1} , x_{n-2} , \dots , x_1]$ but this is just a notational convention.
+
+We can then combine the constructors into a single $F$ function again:
+
+\[ ([] \blob \fcase (:)) \in (\mathbbm{1} + \alpha \times \listset) \rightarrow \listset\]
+
+There is a striking similarity between the lists as defined above and the natural numbers earlier. They both use a base element and a single inductive step. They both have the uniqueness and totality properties (even though we don't prove it here). One could say the share the same (greek: homo) form (greek: morph). These two structures are said to be \textbf{homomorphic}, which means that there exists a transformation that changes the structure of one F-Algebra into another. Such a transformation is called an \textbf{F-homomorphism}.
+
+\todo{stupid diagram with smily face}
+
+\bgbox{In the reader an homomorphism is also called catamorphism}
+
+Since the function $F$ transforms the entire algebra it is different from ``normal'' functions in the sense that it operates on the rules that characterize an inductive type and not on elements of this inductive type. That is why the function $F$ is often called a \textbf{functor}. (Which should not be confused with the functor from object oriented programming languages which are significantly different.)
+
+Lets say we want to find the function $F$ that maps the entire structure of lists to natural numbers. Intuitively we need to transform the ``rules'' of lists into the ``rules'' of natural numbers. Since both structures have 2 rules and both rules describe a basis and a step, it seems most convenient to separately try and match the basis of the two F-algebras, and their inductive steps. Lets try and match the basis of both algebras. 
+
+Lets call this transformation function $h$. What would $h$ look like in this context? It needs to go from the structure of lists to natural numbers. Which is simply the $length$ function. The function that takes a list and returns its length.
+
+
+\section{Fold/Fusion}
+
+Given an inductive type \texttt{Walk w = Stop | Walk n w}, with constructors which we can write as:
+
+\[ (Stop \blob \fcase Walk) \]
+
+We now want to find a generalization of walk. This means finding a homomorphism $h$ such that the below diagram commutes. The functions $b \blob$ and $s$ are the basis and step function for some general type $X$.
+
+\begin{center}
+$\begin{array}{lll}
+Walk               & \xleftarrow{(Stop \blob \fcase Walk)}        & \mathbbm{1} + \mathbb{N}\times Walk      \\
+\downarrow h    &                   & \downarrow (id \fcase (id \fsplit h))  \\
+X               & \xleftarrow{(b \blob \fcase s)}        & \mathbbm{1} + \mathbb{N} \times X
+\end{array}$
+\end{center}
+
+The following needs to hold:
+
+\[ h \circ (Stop \blob \fcase Walk) = (b \blob \fcase s) \circ (id \fcase (id \fsplit h))\]
+
+Using lemma:
+
+\[ h \circ (Stop \blob \fcase Walk) =  (b \blob \circ id) \fcase (s \circ (id \fsplit h))\]
+
+Function composition distributes from the left over cases and id is zero element of function composition:
+
+\[ (h \circ Stop \blob \fcase h \circ Walk) =  (b \blob \fcase (s \circ (id \fsplit h)) \]
+
+This holds exactly when:
+
+\[ h \circ Stop \blob = b \blob \]
+
+\[ h \circ Walk = s \circ (id \fsplit h) \]
+
+Applying the definition of ``$\circ$'' twice:
+
+\[ h.Stop \blob.() = b \blob.() \]
+\[ h.Walk.n.w = s \circ (id \fsplit h) \]
+
+Applying the definition of ``$\circ$'' again and making pointfree:
+
+\[ h.Stop \blob = b \blob \]
+\[ h.Walk.n.w = s . (id.n , h.w) \]
+
+Where $id.n = n$:
+
+\[ h.Walk.n.w = s . (n , h.w) \]
+
+\section{$\lambda$-Calculus}
+A function in lambda calculus is writen in the form 
+\begin{displaymath}
+    \lambda x \rightarrow E
+\end{displaymath} 
+where $x$ is the function’s parameter and $E$ is a lambda expression constituting the function body. 
+A lambda expression $E$ is either a variable (like the $x$ in the above expression), a function in the form above, or an application $E1~E2$. 
+Variable $x$ is said to be ``bound'' if it occurs in $E$ and ``free'' if it does not.\\
+
+Three things can be done with lambda expressions:
+\begin{description}
+    \item[$\alpha$-conversion] renames a bound variable;\\
+        $\lambda x \rightarrow x$ can be $\alpha$-converted to $\lambda y \rightarrow y$
+    \item[$\beta$-reduction]  allows applications to be reduced; $(\lambda x \rightarrow E1) E2 \equiv E1$, \\
+        with all occurances of $x$ in $E1$ replaced with $E2$. If there are name clashes (for example in $(\lambda x \rightarrow \lambda y \rightarrow x~y)y)$, $\alpha$-conversion may be required first.
+    \item[$\eta$-conversion] allows us to say that $f$ and $\lambda x \rightarrow f x$ are equivalent. Eta-conversion expresses the idea of extensionality, which in this context is that two functions are the same if and only if they give the same result for all arguments.
+\end{description}
+
+A redex is a $\lambda$-term which can be reduced using the reduction rules. The term $\lambda x \rightarrow E1) E2$ is a $\beta-redex$, for the $\beta-$reduction rule can be used. The term $\lambda x \rightarrow E$ is an $\eta-$redx iff $x \notin E$.\\
+
+$\lambda-$terms can be represented in a tree, variable are in the leafs and all other constructions in the nodes.
+
+\todo{LaTeXDraw package fixen zodat hier een mooie vector boom kan staan.}
+
+    \section{Reduction Strategies}
+    \label{sec:Reduction_Strategies}
+    A $\lambda-$term is in a normal form if it cannot be further reduced, i.e. it has no redexes. \\
+    \textbf{Examples} $x$, $\lambda x \rightarrow x$\\
+    
+    Not every term has a normal form:\\
+    \textbf{Example} $(\lambda x \rightarrow xxx)(\lambda x \rightarrow xxx) \Rightarrow (\lambda x \rightarrow xxx)(\lambda x \rightarrow xxx)$\\
+    
+    A reduction strategy is has a fixed order for which redex should first be reduced. Two of such reductions are:
+    \begin{description}
+        \item[Left-most outermost (LMOM)] If there is a normal form, LMOM is garantueed to find it. The redex that is not enclosed by another redex and is the left-most is reduced forced.
+        \item[Left-most innermost (LMIM)] The the left-most redex that doesn't contain a redex is reduced first. Does not garantuee a reduction to a normal form, if it exists.
+    \end{description}
+
+
+\end{document}

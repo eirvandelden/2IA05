@@ -1,0 +1,39 @@
+PROG    ::= "begin" DECLS ";" STATLS "end"
+
+DECLS   ::= "declare" IDLS
+
+IDLS    ::= e | IDTS
+
+IDTS    ::= PICO-ID ":" TYPE ( "," PICO-ID ":" TYPE )*
+
+TYPE    ::= TYPE_NATURAL | TYPE_STRING
+
+TYPE_NATURAL ::= "natural"
+TYPE_STRING ::= "string"
+
+STATLS  ::= e | STATS
+
+STATS   ::= STAT ( ";" STAT )*
+
+STAT  ::= STAT_ASSIGN | STAT_IF | STAT_WHILE
+
+STAT_ASSIGN    ::= VAR ":=" EXPR
+STAT_IF    ::= "if" EXPR "then" STATLS "else" STATLS "fi"
+STAT_WHILE    ::= "while" EXPR "do" STATLS "od"
+
+EXPR    ::= EXPR_NATCON | EXPR_STRCON | EXPR_VAR | EXPR_PLUS | EXPR_MIN | EXPR_CAT | EXPR_PARENTHESIS
+
+EXPR_NATCON    ::= NatCon
+EXPR_STRCON    ::= StrCon
+EXPR_VAR       ::= VAR
+EXPR_PLUS    ::= EXPR "+" EXPR
+EXPR_MIN    ::= EXPR "-" EXPR
+EXPR_CAT    ::= EXPR "||" EXPR
+EXPR_PARENTHESIS    ::= "(" EXPR ")"
+
+VAR     ::= PICO-ID
+
+PICO-ID ::= CHAR ( CHAR | DIGIT )*
+
+CHAR    ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" 
+DIGIT   ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"

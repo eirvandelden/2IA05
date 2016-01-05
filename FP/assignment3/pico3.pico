@@ -1,0 +1,37 @@
+begin 
+	declare
+		a: natural,
+		b: natural,
+		tempA: natural,
+		tempB: natural,
+		out: natural,
+		aGreatherThanB: natural;
+		
+	a := 1311;
+	b := 23;
+	out := 0;
+	aGreatherThanB := 1;
+	tempA := 0;
+	tempB := 0;
+	
+	while (b - tempB) do	
+		tempA := tempA + 1;
+		tempB := tempB + 1;		
+		if ((a+1) - tempA) then a := a else aGreatherThanB := 0 fi
+	od;
+	
+	while aGreatherThanB do
+		a := a - b;
+		out := out + 1;
+		aGreatherThanB := 1;
+		tempA := 0;
+		tempB := 0;
+		
+		while (b - tempB) do
+			tempA := tempA + 1;
+			tempB := tempB + 1;
+			if ((a+1) - tempA) then a := a else aGreatherThanB := 0 fi
+		od
+	od
+	
+end

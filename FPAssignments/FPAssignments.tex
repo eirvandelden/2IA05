@@ -1,0 +1,125 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  PROJECT: FPAssignments
+%%
+%%  Created by Etienne van Delden on 09-04-12.
+%%  Copyright 2012 Okami Apps. 
+%%  
+%%  All rights reserved.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Packages declarations
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amssymb}
+\usepackage{amscd}
+
+\usepackage{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Fonts declarations
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\usepackage{euler,eucal}
+
+\newcommand\doubleplus{+\kern-1.3ex+\kern0.8ex}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Begin Document
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Title & Data
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\title{Assignments for the course Functional Programming}
+	
+	\author{Etienne van Delden}
+		
+	\date{\today}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Abstract
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+	\maketitle
+	
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: The sections
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\section{Programming with lists} 
+	
+    We consider the datatype $\mathcal{LT}(B)$  of (finite) binary leaf-trees over type $B$ , defined recursively as the smallest of all possible sets satisfying:
+    \begin{displaymath}\begin{array}{l}
+        \langle b \rangle \in \mathcal{LT}(B) \textrm{, for all }b \in B ,\\
+        \langle s,t \rangle \in \mathcal{LT}(B) \textrm{, for all }s,t \in \mathcal{LT}(B).
+    \end{array}\end{displaymath}
+    
+9. Function L, of type $\mathcal{LT}(B) \rightarrow \mathcal{L}_{*}(B)$, is defined by, for all $b \in B$ and $s,t \in \mathcal{LT}(B)$:
+    \begin{displaymath}\begin{array}{l}
+        L\cdot \langle b \rangle = [b] \\
+        L \cdot \langle s,t \rangle = L·s+L·t
+    \end{array}\end{displaymath}
+    
+    \[\ldots \] This inspires us to consider the following generalization of function L , as a function F of type: $\mathcal{L}_{*}(\mathcal{LT}(B)) \rightarrow \mathcal{L}_{*}(B) \rightarrow \mathcal{L}_{*}(B)$, and with this specification, for all $ss \in \mathcal{L}_{*}(\mathcal{LT}(B))$ and $z \in \mathcal{L}_{*}(B)$:
+    \begin{displaymath}\begin{array}{l}
+        F \cdot ss \cdot z = flt·(L\bullet rev \cdot ss) + z .
+    \end{array}\end{displaymath}
+
+(a) Prove that, as stated above, $L\cdot s\doubleplus L\cdot t = flt\cdot (L\bullet[s,t])$.
+    \begin{displaymath}\begin{array}{lll}
+         & & flt \cdot (L \bullet [s,t]) \\
+        = & \{ def \bullet \} & flt \cdot (L\cdot s \doubleplus L\cdot t) \\
+        = & \{ def flt \} & flt \cdot (L\cdot s ) \doubleplus  flt \cdot (L\cdot t) \\
+        = & \{ def flt \} & L\cdot s \doubleplus  L\cdot t \\
+    \end{array}\end{displaymath}
+
+
+
+(b) Show that function F indeed is a generalization of L , by showing how L can be defined in terms of F .
+
+
+
+(c) Derive an efficient recursive declaration for function F in which L does not occur anymore.
+(d) Explain (the usefulness of) the presence of function rev in F ’s specification.    
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Bibliography
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{thebibliography}{XXXX}
+		
+		\bibitem[XXXX]{XXXX}
+		\newblock{Name,}
+		\newblock{\em Title,}
+		\newblock{ vol. X.}
+		\newblock{ pp. XX--YY.}
+		\newblock{Editor, Town,}
+		\newblock{Year.}
+		
+	\end{thebibliography}
+	
+\end{document}

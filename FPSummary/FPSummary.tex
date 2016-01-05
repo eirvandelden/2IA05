@@ -1,0 +1,235 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  PROJECT: FPSummary
+%%
+%%  Created by Etienne van Delden on 04-03-12.
+%%  Copyright 2012 Okami Apps. 
+%%  
+%%  All rights reserved.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[onesided]{memoir}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Packages declarations
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{/Users/e_vd/Developer/XuBu/XuBu}
+%\usepackage{amsthm}
+
+
+
+%\theoremstyle{definition} \newtheorem{lemma}{Lemma}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Begin Document
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Title & Data
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\title{2IA05\\ 
+        Functional \mbox{Programming}}
+	
+	\author{Etienne van Delden}
+		
+	\date{\today}
+	
+	\maketitle
+%    \tableofcontents
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Introduction
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\chapter*{Introduction} \newpage \pagecolor{white}
+    This is a summary for the course 2IA05: Functional Programming on the University of Technology Eindhoven. It was taught during semester 2A 2012.
+	
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: The chapters
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+    \chapter{General comments and notation} \newpage \pagecolor{white}
+    
+    \section{Proof by Induction}
+    The Induction Hypothesis is assumed during a proof by Induction and does not necessarily have to be written down. 
+    
+    \section{Finite lists}
+    The set $\mathcal{L}_n(A)$ are all (finite) lists, with element type $A$, of length $n,n \geq 0$. Examples/definitions:
+    \begin{displaymath}
+    \begin{array}{lcl}
+        \mathcal{L}_0(A)     & = & \{[]\} \\
+        \mathcal{L}_{n+1}(A) & = & \{ a \triangleright s~|~a \in A \land s \in \mathcal{L}_n(A) \} \\
+        \mathcal{L}_*(A)     & = & (\biguplus n : n \geq 0: \mathcal{L}_n(A))
+    \end{array}
+    \end{displaymath}
+       
+    
+    \chapter{Functions} \newpage \pagecolor{white}
+    
+    \section{``Map'': $\bullet$}
+    The function ``map'', denoted as $\bullet$, is the function that applies a function $f$ on each element of a list, with a function $f: A \rightarrow B$. It is specified as:
+    \begin{displaymath}
+        (f \bullet): \mathcal{L}_*(A) \rightarrow \mathcal{L}_*(B) \qquad 
+    \end{displaymath}
+        with
+    \begin{displaymath}
+        (\forall i: 0 \leq i < n: (f\bullet s)\cdot i = f \cdot (s \cdot i))
+    \end{displaymath}
+    
+    for $s \in \mathcal{L}_*(A)$, with $\#s = n$ and $\#(f\bullet s) = \# s $.
+    Let's now derive the $\bullet$-function.
+
+    \todo{put the following on the right spot}
+        \begin{displaymath}
+            f \bullet [] = []
+        \end{displaymath}
+        The definition follows from the type of the $\bullet$-function.
+    
+
+        \subsection{Base}
+        For $a \in A, s\in \mathcal{L}_n(A)$, we have the following base case  $i = 0$;
+        \begin{displaymath} \begin{array}{llr}
+          &  (f\bullet(a\triangleright s)) \cdot 0  & \color{lightgray}{\textrm{specification} \bullet} \\
+        = & f \cdot ( (a\triangleright s)\cdot 0)   & \color{lightgray}{\textrm{property~} \triangleright}\\
+        = & f \cdot a                               & \color{lightgray}{\triangleright \textrm{-trick}} \\
+        = & ( f\cdot a ~\triangleright \textbf{?})\cdot 0 & 
+        \end{array} \end{displaymath}
+
+        
+        \subsection{Induction Step}
+        For $i: 0 \leq i < n$;
+        \begin{displaymath} \begin{array}{llr}
+        
+          &  (f \bullet(a\triangleright s)) \cdot (i+1) & \color{lightgray}{\textrm{specification} \bullet} \\
+        = & f \cdot ( (a\triangleright s)\cdot (i+1))   & \color{lightgray}{\textrm{property~} \triangleright}\\
+        = & f\cdot (s\cdot i)                            & \color{lightgray}{\textrm{specification $\bullet$, I.H}}\\
+        = & (f \bullet s) \cdot i                       & \color{lightgray}{\triangleright \textrm{-trick}}\\
+        = & ( \textbf{?~}\triangleright f\bullet s ) \cdot (i+1) & 
+        \end{array} \end{displaymath}        
+
+        \subsection{Result}
+        To get the final result, we can combine the two derived results and fill in the ``Don't cares'' (\textbf{?}):
+        
+        \begin{displaymath} \begin{array}{llr}
+          &  \textrm{specification ~} f\bullet  & \color{lightgray}{\textrm{Combination}} \\
+        \Leftarrow & (\forall i: 0 \leq i < n+1:  & \\
+        & \quad (f\bullet(a\triangleright s))\cdot i= & \\
+        & \quad (f\cdot a \triangleright f \bullet s)\cdot i ) & \color{lightgray}{\textrm{Leibniz (extensionality)}} \\
+        \Leftarrow & f \bullet (a \triangleright s) = (f \cdot a) \triangleright f \bullet s
+        \end{array} \end{displaymath}
+
+        Thus, the definition of ``$\bullet$'' is:
+        \begin{displaymath} \begin{array}{lcl}
+            f \bullet [] & = & [] \\
+            f \bullet (a\triangleright s) & = & f\cdot a \triangleright f \bullet s
+        \end{array} \end{displaymath}
+        
+    
+            \subsubsection{Lemma's Used}
+            \begin{displaymath}
+            \begin{array}{lcl}
+                (a \triangleright s) \cdot 0 & = &  a \\
+                (a\triangleright s)\cdot (i+1) & = & s\cdot i, i \geq 0
+            \end{array}
+            \end{displaymath}
+
+    \section{``Reverse'': rev}\label{function:rev}
+        The function $rev$ reverses the order of all elements in a list.
+    The type of $rev$ is
+    
+    \begin{displaymath}
+        \mathcal{L}_n(A) \rightarrow \mathcal{L}_n(a) \qquad n \geq 0
+    \end{displaymath}
+    with specification
+    
+    \begin{displaymath}
+        (\forall i: 0 \leq i \leq n: rev\cdot s \cdot i = s\cdot (n-i))
+    \end{displaymath}
+    for all $s \in \mathcal{L}_{n+1}(A)$.
+    
+    We can now derive the definition of $rev$, by using Induction.
+        From the type of $rev$ it follows that:
+        \begin{displaymath}
+            rev\cdot [] = []
+        \end{displaymath}
+        
+        \subsection{Base}
+        
+        \begin{displaymath} \begin{array}{llr}
+          & rev\cdot(a\triangleright s)\cdot n & \color{lightgray}{\textrm{specification~} rev} \\
+        = & (a\triangleright s)\cdot 0  & \color{lightgray}{\textrm{property~} \triangleright}\\
+        = & a & \color{lightgray}{\triangleright \textrm{-trick}}\\
+        = & [a]\cdot 0 & \color{lightgray}{\textrm{property~} \doubleplus \textrm{; assume} \#t=n}\\
+        = & (t \# [a])\cdot n & 
+        \end{array} \end{displaymath}        
+
+        \colorbox{lightgray}{\color{white}{As we start counting at 0, this is correct. }}
+
+        \subsection{Step}
+        For $s\in\mathcal{L}_N(A)$ and $a\in A$.
+        
+        \begin{displaymath} \begin{array}{llr}       
+          & rev\cdot(a\triangleright s)\cdot i & \color{lightgray}{\textrm{specification~} rev} \\
+        = & (a\triangleright s)\cdot (n-i) & \color{lightgray}{\textrm{assume~} i<n, \textrm{property~} \triangleright}\\
+        = & s \cdot (n-1-i) & \color{lightgray}{\textrm{Ind. Hypothesis, specification~} rev}\\
+        = & rev \cdot s \cdot i & \color{lightgray}{textrm{property~}\doubleplus}\\
+        = & (rev \cdot s \doubleplus \boldmath{?}) \cdot i & 
+        \end{array} \end{displaymath}
+
+        \subsection{Result}
+        We can now combine the results from the Complete Induction derivation to form the definition of $rev$ :
+        \begin{displaymath}\begin{array}{lll}
+            rev \cdot [] & = & [] \\
+            rev \cdot (a \triangleright s) & = & rev \cdot s \doubleplus [a] \\
+            rev \cdot s & = & s \cdot n \triangleright rev \cdot (s \lceil n)
+        \end{array}\end{displaymath}
+        
+        This solution runs in $O(n^2)$ time complexity. This can be improved by using a general function that has an accumalator list in which the answer is built. See Section~\label{general:grev}
+
+    \chapter{Generalisation by Abstraction} \newpage \pagecolor{white}
+        
+        \section{``Reverse'' $grev$} \label{general:grev}
+        The function $grev$ is a generalized version of function $rev$ (as defined in Section~\label{function:rev}). It uses an extra parameter $t \in \mathcal{L}_n(A)$ in which the result list is built.
+        We specify $grev$ as follows:
+        \begin{displaymath}\begin{array}{lll}
+            grev \cdot t \cdot s & = & rev \cdot \doubleplus t
+        \end{array}\end{displaymath}
+        
+        \Bold{Use:}
+        \begin{displaymath}\begin{array}{lll}
+            rev \cdot s & = & grev \cdot [] \cdot s
+        \end{array}\end{displaymath}
+        
+        \subsection{Base case}
+        \begin{displaymath}\begin{array}{lll}
+              & grev \cdot t \cdot [] & \color{lightgray}{\textrm{specification~} grev} \\
+            = & rev \cdot [] \doubleplus t & \color{lightgray}{\textrm{property~} rev}\\
+            = & [] \doubleplus t & \color{lightgray}{\textrm{property~} \doubleplus}\\
+            = & t & 
+        \end{array}\end{displaymath}
+        
+        \subsection{Induction step}
+        \begin{displaymath}\begin{array}{lll}
+          & grev \cdot t \cdot (a \triangleright s) & \color{lightgray}{\textrm{specification~} grev} \\
+        = & rev \cdot (a \triangleright s ) \doubleplus t & \color{lightgray}{\textrm{property~} rev}\\
+        = & & 
+        \end{array}\end{displaymath}
+        
+    \chapter{Divide and Conquer} \newpage \pagecolor{white}
+\end{document}

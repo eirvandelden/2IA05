@@ -1,0 +1,81 @@
+# type Prog = ([Decl],[Stat])
+# type Decl = (Name, Type)
+# type Name = String
+#
+# reservedWords = ["begin", "end", "declare", "natural", "string", "if", "then", "else", "fi", "while", "do", "od"]
+#
+# data Type = N | S deriving (Show, Eq)
+#
+# -- waarden bij type N en S
+# data Val  = N1 Integer | S1 String deriving (Show,Eq)
+#
+# data Stat = Assign Name Expr
+#          | If Expr [Stat] [Stat]
+#          | While Expr [Stat]
+#         deriving (Show,Eq)
+#
+# data Expr = NCon Integer
+#           | SCon String
+#           | Var Name
+#           | Bin Op Expr Expr
+#          deriving (Show,Eq)
+#
+# data Op   = Plus | Min | Cat deriving (Show,Eq)
+
+type prog    = Prog
+type decls   = [Decl]
+type idls    = [Decl]
+type idts    = Name
+type type    = Type
+type statls  = [Stat]
+type stats   = [Stat]
+type stat    = Stat
+type stat_assign    = Stat
+type stat_if        = Stat
+type stat_while     = Stat
+type expr    = Expr
+type expr_natcon    = Expr
+type expr_strcon    = Expr
+type expr_var       = Expr
+type expr_plus      = Expr
+type expr_min       = Expr
+type expr_cat       = Expr
+type expr_parenthesis = Expr
+type var     = Expr
+type picoid  = Name
+type char    = String
+type digit   = String
+type parse_char = String
+type parse_digit = String
+type parse_type = Type
+type type_natural = Type
+type type_string = Type
+
+
+rtype prog = (result_decls, result_statls)
+rtype decls = result_idls
+rtype idls = result
+rtype idts = ((result_picoid, result_parse_type):result_list)
+rtype picoid = (concat ([result_parse_char]++result_list))
+rtype parse_char = result
+rtype parse_digit = result
+rtype var = (Var, result_picoid)
+rtype stats = (result_stat:result_list)
+rtype statls = result
+rtype parse_type = result
+rtype type_natural = N
+rtype type_string = S
+
+rtype expr           = result
+rtype expr_natcon    = (NCon result_natcon)
+rtype expr_strcon    = (SCon result_strcon)
+rtype expr_var       = (Var result_var)
+rtype expr_plus      = (Bin Plus result_expr result_expr2)
+rtype expr_min       = (Bin Min result_expr result_expr2)
+rtype expr_cat       = (Bin Cat result_expr result_expr2)
+rtype expr_parenthesis = result_expr
+
+rtype stat    = result
+rtype stat_assign   = (Assign result_var result_expr)
+rtype stat_if       = (If result_expr result_statls result_statls2)
+rtype stat_while    = (While result_expr result_statls)

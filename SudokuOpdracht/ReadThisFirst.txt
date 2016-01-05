@@ -1,0 +1,15 @@
+
+                   Sudoku Opdracht voorjaar 2012
+                   =============================
+
+Deze folder bevat, naast dit "ReadThisFirst" documentje, drie files:
+twee Haskell modules, genaamd "Sudoku.hs" en "Stack.hs", en ŽŽn .pdf-
+document waarin de eerste practicumopdracht staat. Dit documentje is
+nog actueel, BEHALVE de deadline: de deadline voor deze cursus (voor-
+jaar 2012) is:  zondag 4 maart 2012, 24:00 uur.
+
+Deelnemers zijn zelf verantwoordelijk voor het ophalen en installeren
+van een Haskell implementatie. Deze kan hier worden gevonden:
+
+    http://www.haskell.org 
+

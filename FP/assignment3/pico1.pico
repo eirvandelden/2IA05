@@ -1,0 +1,21 @@
+begin 
+	declare in : natural,
+					out : natural,
+					a : natural,
+					b : natural,
+					h : natural;
+					
+	in := 11;
+	a := 1;
+	
+	while in do
+		h := a;
+		a := b;
+		b := h + b;
+		in := in-1
+	od;
+	if a then a:= 3 else a:=b fi;	
+
+
+	out := b
+end

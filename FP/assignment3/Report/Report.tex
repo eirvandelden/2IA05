@@ -1,0 +1,145 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  PROJECT: Report
+%%
+%%  Created by Etienne van Delden on 30-03-11.
+%%  Copyright 2011 __MyCompanyName__. 
+%%  
+%%  All rights reserved.
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Packages declarations
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{amssymb}
+\usepackage{amscd}
+\usepackage{hyperref}
+\usepackage{verbatim}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Fonts declarations
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{euler,eucal}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% MARK: Input macro file
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{Report-macro.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 
+%% Begin Document
+%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Title & Data
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\title{2IA05: Functioneel Programmeren\\
+            Assignment 2}
+	
+	\author{Etienne van Delden (0618959)\\
+            Ron Vanderfeesten (0581347)\\
+            Tom Vrancken (0611004)}
+		
+	\date{\today}
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Abstract
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		
+	\maketitle
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Introduction
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\section*{Introductie}
+        %Doel van de parser / opdracht	
+        Voor deze opdracht is een parser gemaakt, die als doel heeft een syntactisch valide pico programma om te zetten
+        in een Haskell representatie van het gegeven pico programma. De parser leest een pico programma vanuit een bestand
+        in en probeert vervolgens een Haskell representatie, conform de gegeven Haskell environment voor pico programma's
+        \cite{opdracht2},te genereren. Deze Haskell environment bevat alle datatype definities die nodig zijn om een
+        arbitrair pico programma in Haskell te representeren.
+    
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: The sections
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\section{Structuur van de parser} 
+        Valide Pico programma's worden gegenereerd door de contextvrije grammatica zoals die is gegeven in \cite{opdracht2}. Deze grammatica is genoteerd in EBNF en bestaat uit productieregels die zijn opgebouwd uit terminals en non-terminals. 
+        Wij hebben een parser geschreven die conform deze grammatica Pico programma's omzet in de corresponderende Haskell representatie. Om dit te bewerkstelligen hebben we voor iedere non-terminal een functie geschreven. Deze functies representeren de, bij de non-terminal, horende grammaticaregel en proberen de input volgens deze regels te parsen. Iedere functie levert daartoe de Haskell representatie van de  bijbehorende non-terminal op. Door de functie behorende bij de hoogste productieregel (namelijk \texttt{PROG}) aan te roepen word een geldig Pico programma volledig geparsed.\\
+        %DIT MOET ANDERS Voor alle terminals zijn eveneens functies gemaakt. Non-terminal regels die louter uit terminals bestaan fungeren als 
+
+        Omdat de structuur van de parser gelijk is aan die van de contextvrije grammatica zal in iedere functie die correspondeert met een non-terminal, die functies worden aangeroepen die corresponderen met de non-terminals in het rechterlid van de grammaticaregel onder beschouwing. Bijvoorbeeld: de functie \texttt{prog} zal (onder meer) op haar beurt de functies \texttt{decls} en \texttt{statls} aanroepen. Dit is conform de grammatica die specificeert dat een \texttt{PROG} non-terminal, naast een aantal terminals, bestaat uit een declaratielijst (non-terminal \texttt{DECLS}) en een statementlijst (non-terminal \texttt{STATLS}). Iedere functie retourneert het stukje Haskell representatie voor de bijbehorende grammatica regel waardoor er uiteindelijk een boomstructuur ontstaat die de Haskell representatie van het complete Pico programma voorsteld. Dit is onze ``parsetree'' en tevens uitvoer van de parser.
+        %% gegeven bNF grammatica, bestaande uit productie regels & terminals
+        % voor iedere non-terminal eeen functie, conform die grammatica regel, delen van Haskell rep terug geeft
+        % en stukken Haskell terug geeft. voor iedere grammatica regel een functie die die functie uitvoert. Loopt naar alle bladeren en voegt dat dan samen in de root van de boom
+        %hulp functies
+        % AANNAMES?!
+        
+    
+    \section{Validatie van parser-output}
+	Als de invoer van de parser een \textit{syntactisch correct} Pico programma is dan zal de parser een correcte Haskell representatie van dit Pico programma opleveren. Deze opgeleverde Haskell representatie kan nu gecontroleerd worden op de gegeven contextcondities\cite{opdracht2}. Deze contextcondities kunnen gecontroleerd worden aan de hand van de, door ons, in opdracht2\cite{report2} gemaakte functies. Table \ref{tbl:context} geeft een overzicht weer van de contextcondities die gecontroleerd moeten worden samen met de functies die deze condities controleren.
+    
+    \begin{table}[!ht]
+    \begin{tabular}{l|l|l}
+         & Functienaam & Beschrijving \\  \hline
+        \textbf{c1} & \texttt{context\_conditie1} & Gedeclareerde variabelen verschillen van reserved words \\
+        \textbf{c2} & \texttt{context\_conditie2} & Alle variabele namen moeten uniek zijn \\
+        \textbf{c4} & \texttt{program\_type\_check} & Juiste types voor operanden, guards en resultaten \\
+        \textbf{c5} & \texttt{program\_type\_check} & Juiste types voor operanden, guards en resultaten \\
+        \textbf{c6} & \texttt{program\_type\_check} & Juiste types voor operanden, guards en resultaten
+    \end{tabular}
+    \label{tbl:context}
+    \caption{Deze tabel laat alle context condities zien die moeten gelden op een Pico programma en de functies die voor opdracht 2 zijn gemaakt die hierop controleren.}
+    \end{table}
+
+    
+    Voor deze opdracht hebben we de Pico programma's ``pico1.pico'', ``pico2.pico'' en ``pico3.pico'' geparsed en vervolgens, met behulp van de in Tabel \ref{tbl:context} genoemde functies, gecontroleerd op de geldigheid van de contextcondities. Alle drie de programma's kunnen succesvol worden geparsed. Tevens slagen alle contextconditie controles en kunnen de programma's succesvol door onze evaluator worden uitgevoerd.
+
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%% 
+	%% MARK: Bibliography
+	%% 
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{thebibliography}{XXXX}
+		
+		\bibitem[1]{opdracht2}
+		\newblock{H.P.J. van Geldrop,}
+		\newblock{\em Programmeertaal Pico,}
+		\newblock{2011.}
+        
+        \bibitem[2]{report2}
+		\newblock{E.I.R. van Delden, R.G.F.P. Vanderfeesten, T.J.G.M. Vrancken,}
+		\newblock{\em 2IA05: Functioneel Programmeren Assignment 2}
+		\newblock{2011.}
+		
+	\end{thebibliography}
+	
+\end{document}
